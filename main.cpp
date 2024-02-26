@@ -2,9 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #include <chrono>
-#include <functional>
 #include <iostream>
-#include <locale>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -149,31 +147,6 @@ using ListenerType = void(int /*eventType*/, dxf_const_string_t /*symbolName*/, 
                           int /*dataCount*/, void * /*userData*/);
 using ListenerPtrType = std::add_pointer_t<ListenerType>;
 
-template<std::size_t>
-inline ListenerPtrType getListener() {
-    static ListenerPtrType l = [](int eventType, dxf_const_string_t symbolName, const dxf_event_data_t *data,
-                                  int dataCount, void *userData) {
-        std::lock_guard<std::recursive_mutex> lock{ioMutex};
-
-        std::wcout << "Listener[" << (std::size_t) userData << "]: ";
-
-        if (eventType == DXF_ET_QUOTE) {
-            auto *q = (dxf_quote_t *) data;
-
-            std::wcout << L"Quote{symbol = " << symbolName;
-            std::wcout << L" bidTime = ";
-            printTimestamp(q->bid_time);
-            std::wcout << L" bidExchangeCode = " << q->bid_exchange_code << ", bidPrice = " << q->bid_price << ", bidSize=" << q->bid_size << ", ";
-            std::wcout << L"askTime = ";
-            printTimestamp(q->ask_time);
-            std::wcout << L" askExchangeCode = " << q->ask_exchange_code << ", askPrice = " << q->bid_price << ", askSize=" << q->bid_size << ", ";
-            std::wcout << L"scope = " << orderScopeToString(q->scope) << "}" << std::endl;
-        }
-    };
-
-    return l;
-}
-
 struct SubscriptionBase {
     virtual ~SubscriptionBase() = default;
     virtual void Close() = 0;
@@ -194,6 +167,8 @@ struct Subscription : public SubscriptionBase {
     ERRORCODE errorCode{DXF_SUCCESS};
 
     Subscription(dxf_connection_t connection, dxf_const_string_t symbol) : connection(connection), symbol(symbol) {
+        log("Sub[id = {}]: Creating a subscription\n", id);
+
         errorCode = dxf_create_subscription(connection, DXF_ET_QUOTE, &handle);
 
         if (errorCode == DXF_FAILURE) {
@@ -202,7 +177,7 @@ struct Subscription : public SubscriptionBase {
             return;
         }
 
-        log("Attaching listener: 0x{}\n", (void *) getListener());
+        log("Sub[id = {}, handle = {}]: Attaching the listener: {}\n", id, (void*)handle, (void *) getListener());
 
         errorCode = dxf_attach_event_listener(handle, getListener(), (void *) (std::size_t{id}));
 
@@ -211,6 +186,8 @@ struct Subscription : public SubscriptionBase {
 
             return;
         }
+
+        log("Sub[id = {}, handle = {}]: Adding the symbol: {}\n", id, (void*)handle, StringConverter::toString(symbol));
 
         errorCode = dxf_add_symbol(handle, symbol);
 
@@ -224,7 +201,7 @@ struct Subscription : public SubscriptionBase {
                                       int dataCount, void *userData) {
             std::lock_guard<std::recursive_mutex> lock{ioMutex};
 
-            std::wcout << "Listener[" << (std::size_t) userData << "]: ";
+            std::wcout << "Sub[" << id << "]: Listener[" << (std::size_t) userData << "]: ";
 
             if (eventType == DXF_ET_QUOTE) {
                 auto *q = (dxf_quote_t *) data;
@@ -245,6 +222,8 @@ struct Subscription : public SubscriptionBase {
 
     void CloseImpl() {
         if (handle && errorCode == DXF_SUCCESS) {
+            log("Sub[id = {}, handle = {}]: Removing the symbol: {}\n", id, (void*)handle, StringConverter::toString(symbol));
+
             errorCode = dxf_remove_symbol(handle, symbol);
 
             if (errorCode == DXF_FAILURE) {
@@ -253,7 +232,7 @@ struct Subscription : public SubscriptionBase {
                 return;
             }
 
-            std::wcout << "Detaching listener: 0x" << std::hex << (void *) getListener() << std::endl;
+            log("Sub[id = {}, handle = {}]: Detaching the listener: {}\n", id, (void*)handle, (void *) getListener());
 
             auto result = dxf_detach_event_listener(handle, getListener());
 
@@ -262,6 +241,8 @@ struct Subscription : public SubscriptionBase {
 
                 return;
             }
+
+            log("Sub[id = {}, handle = {}]: Closing the subscription\n", id, (void*)handle);
 
             errorCode = dxf_close_subscription(handle);
 
