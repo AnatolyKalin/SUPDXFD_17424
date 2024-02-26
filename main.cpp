@@ -207,12 +207,13 @@ struct Subscription : public SubscriptionBase {
                 auto *q = (dxf_quote_t *) data;
 
                 std::wcout << L"Quote{symbol = " << symbolName;
-                std::wcout << L" bidTime = ";
+                std::wcout << L", sequence = " << q->sequence;
+                std::wcout << L", bidTime = ";
                 printTimestamp(q->bid_time);
-                std::wcout << L" bidExchangeCode = " << q->bid_exchange_code << ", bidPrice = " << q->bid_price << ", bidSize=" << q->bid_size << ", ";
+                std::wcout << L", bidExchangeCode = " << q->bid_exchange_code << ", bidPrice = " << q->bid_price << ", bidSize=" << q->bid_size << ", ";
                 std::wcout << L"askTime = ";
                 printTimestamp(q->ask_time);
-                std::wcout << L" askExchangeCode = " << q->ask_exchange_code << ", askPrice = " << q->bid_price << ", askSize=" << q->bid_size << ", ";
+                std::wcout << L", askExchangeCode = " << q->ask_exchange_code << ", askPrice = " << q->bid_price << ", askSize=" << q->bid_size << ", ";
                 std::wcout << L"scope = " << orderScopeToString(q->scope) << "}" << std::endl;
             }
         };
