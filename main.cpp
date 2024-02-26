@@ -292,19 +292,19 @@ int main() {
 
     subs.emplace_back(new Subscription<1>(c, symbol));
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     subs.emplace_back(new Subscription<2>(c, symbol));
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     subs.emplace_back(new Subscription<3>(c, symbol));
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     subs.emplace_back(new Subscription<4>(c, symbol));
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     subs.emplace_back(new Subscription<5>(c, symbol));
 
@@ -312,7 +312,7 @@ int main() {
 
     subs[2]->Close();
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
     return 0;
 }
