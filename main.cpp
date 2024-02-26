@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Devexperts LLC.
+// SPDX-License-Identifier: MPL-2.0
+
 #include <chrono>
 #include <functional>
 #include <iostream>
@@ -324,100 +327,11 @@ int main() {
 
     subs.emplace_back(new Subscription<5>(c, symbol));
 
-//    Subscription<1> sub(c, symbol);
-//    Subscription<2> sub(c, symbol);
-//    Subscription<3> sub(c, symbol);
-//    Subscription<4> sub(c, symbol);
-//    Subscription<5> sub(c, symbol);
-
-
-//    dxf_subscription_t s{};
-//    result = dxf_create_subscription(c, DXF_ET_QUOTE, &s);
-//
-//    if (result == DXF_FAILURE) {
-//        processLastError();
-//
-//        return 2;
-//    }
-//
-//    onScopeExit([&s] {
-//        auto result = dxf_close_subscription(s);
-//
-//        if (result == DXF_FAILURE) {
-//            processLastError();
-//        }
-//    });
-//
-//
-//    std::vector<ListenerPtrType> listeners{getListener<1>(), getListener<2>(), getListener<3>(), getListener<4>(), getListener<5>()};
-//
-//    for (std::size_t i = 0; i < listeners.size(); i++) {
-//        std::lock_guard<std::recursive_mutex> lock{ioMutex};
-//
-//        std::wcout << "Attaching listener: 0x" << std::hex << (void *) listeners[i] << std::endl;
-//
-//        result = dxf_attach_event_listener(s, listeners[i], (void *) (std::size_t{i}));
-//
-//        if (result == DXF_FAILURE) {
-//            processLastError();
-//
-//            return 3;
-//        }
-//    }
-//
-//
-//    onScopeExit([&s, &listeners] {
-//        for (auto &listener: listeners) {
-//            std::lock_guard<std::recursive_mutex> lock{ioMutex};
-//
-//            std::wcout << "Detaching listener: 0x" << std::hex << (void *) listener << std::endl;
-//
-//            auto result = dxf_detach_event_listener(s, listener);
-//
-//            if (result == DXF_FAILURE) {
-//                processLastError();
-//            }
-//        }
-//    });
-//
-//    result = dxf_add_symbol(s, symbol);
-//
-//    if (result == DXF_FAILURE) {
-//        processLastError();
-//
-//        return 4;
-//    }
-//
-//    onScopeExit([&s, &symbol] {
-//        auto result = dxf_remove_symbol(s, symbol);
-//
-//        if (result == DXF_FAILURE) {
-//            processLastError();
-//        }
-//    });
-//
-//    std::this_thread::sleep_for(std::chrono::seconds(3));
-//
-//    {
-//        std::lock_guard<std::recursive_mutex> lock{ioMutex};
-//
-//        std::wcout << "Detaching listener: 0x" << std::hex << (void *) listeners[2] << std::endl;
-//
-//        result = dxf_detach_event_listener(s, listeners[2]);
-//
-//        if (result == DXF_FAILURE) {
-//            processLastError();
-//        }
-//    }
-
     std::this_thread::sleep_for(std::chrono::seconds(3));
 
     subs[2]->Close();
 
     std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    //sub.Close();
-    ///std::cin.get();
 
     return 0;
 }

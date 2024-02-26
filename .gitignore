@@ -1,51 +1,54 @@
+# Copyright (c) 2024 Devexperts LLC.
+# SPDX-License-Identifier: MPL-2.0
+
+# Prerequisites
 *.d
+
+# Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+
+# Precompiled Headers
 *.gch
 *.pch
+
+# Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
+
+# Fortran module files
 *.mod
 *.smod
+
+# Compiled Static libraries
 *.lai
 *.la
 *.a
 *.lib
+
+# Executables
 *.exe
 *.out
 *.app
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
-.idea/**/aws.xml
-.idea/**/contentModel.xml
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-.idea/**/dbnavigator.xml
-.idea/**/gradle.xml
-.idea/**/libraries
-cmake-build-*/
-.idea/**/mongoSettings.xml
-*.iws
-out/
-.idea_modules/
-atlassian-ide-plugin.xml
-.idea/replstate.xml
-.idea/sonarlint/
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-.idea/httpRequests
-.idea/caches/build_file_checksums.ser
 
-cmake-build-*
+build/
+cmake-build-*/
+.idea/
+/docs/html/
+/docs/latex/
+/docs/*.log
+
+.PVS-Studio/
+*.PVS-Studio.*
+
+build-*/
+
+dist/
+dist-*/
+
+CMakeSettings.json
+*.patch
+.vs/**
