@@ -15,9 +15,3 @@ cmake --build . --config Release
 
 ```
 
-## Run Tests
-
-```shell
-cd build
-ctest -C Release --extra-verbose
-```
